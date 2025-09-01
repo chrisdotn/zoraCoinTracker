@@ -6,10 +6,50 @@ import "lib/sim-idx-generated/src/ZoraFactory.sol";
 /// Index events from the ZoraFactory on Ethereum
 /// This listener tracks coin creation events from the ZoraFactory
 contract ZoraFactoryListener is 
-    ZoraFactory$OnCoinCreatedEvent
-    // ZoraFactory$OnCoinCreatedV4Event,
-    // ZoraFactory$OnCreatorCoinCreatedEvent
+    ZoraFactory$OnCoinCreatedEvent,
+    ZoraFactory$OnCoinCreatedV4Event,
+    ZoraFactory$OnCreatorCoinCreatedEvent
 {
+    /// Struct for V4 coin creation event data
+    struct CoinCreatedV4Data {
+        uint64 chainId;
+        address caller;
+        address payoutRecipient;
+        address platformReferrer;
+        address currency;
+        string uri;
+        string name;
+        string symbol;
+        address coin;
+        address currency0;
+        address currency1;
+        uint24 fee;
+        int24 tickSpacing;
+        address hooks;
+        bytes32 poolKeyHash;
+        string version;
+    }
+    
+    /// Struct for creator coin creation event data
+    struct CreatorCoinCreatedData {
+        uint64 chainId;
+        address caller;
+        address payoutRecipient;
+        address platformReferrer;
+        address currency;
+        string uri;
+        string name;
+        string symbol;
+        address coin;
+        address currency0;
+        address currency1;
+        uint24 fee;
+        int24 tickSpacing;
+        address hooks;
+        bytes32 poolKeyHash;
+        string version;
+    }
+
     /// Emitted events are indexed.
     /// To change the data which is indexed, modify the event or add more events.
     
@@ -29,44 +69,11 @@ contract ZoraFactoryListener is
     );
     
     // Event for tracking coin creation V4 events
-    event CoinCreatedV4(
-        uint64 chainId,
-        address caller,
-        address payoutRecipient,
-        address platformReferrer,
-        address currency,
-        string uri,
-        string name,
-        string symbol,
-        address coin,
-        address currency0,
-        address currency1,
-        uint24 fee,
-        int24 tickSpacing,
-        address hooks,
-        bytes32 poolKeyHash,
-        string version
-    );
+    // use an unamed event to avoid stack too deep errors: https://docs.sim.dune.com/idx/listener/errors#stack-too-deep-errors
+    event CoinCreatedV4(CoinCreatedV4Data);
     
     // Event for tracking creator coin creation events
-    event CreatorCoinCreated(
-        uint64 chainId,
-        address caller,
-        address payoutRecipient,
-        address platformReferrer,
-        address currency,
-        string uri,
-        string name,
-        string symbol,
-        address coin,
-        address currency0,
-        address currency1,
-        uint24 fee,
-        int24 tickSpacing,
-        address hooks,
-        bytes32 poolKeyHash,
-        string version
-    );
+    event CreatorCoinCreated(CreatorCoinCreatedData);
 
     /// Handler for CoinCreated event
     function onCoinCreatedEvent(
@@ -88,53 +95,57 @@ contract ZoraFactoryListener is
         );
     }
 
-    // /// Handler for CoinCreatedV4 event
-    // function onCoinCreatedV4Event(
-    //     EventContext memory ctx,
-    //     ZoraFactory$CoinCreatedV4EventParams memory inputs
-    // ) external override {
-    //     emit CoinCreatedV4(
-    //         uint64(block.chainid),
-    //         inputs.caller,
-    //         inputs.payoutRecipient,
-    //         inputs.platformReferrer,
-    //         inputs.currency,
-    //         inputs.uri,
-    //         inputs.name,
-    //         inputs.symbol,
-    //         inputs.coin,
-    //         inputs.poolKey.currency0,
-    //         inputs.poolKey.currency1,
-    //         inputs.poolKey.fee,
-    //         inputs.poolKey.tickSpacing,
-    //         inputs.poolKey.hooks,
-    //         inputs.poolKeyHash,
-    //         inputs.version
-    //     );
-    // }
+    /// Handler for CoinCreatedV4 event
+    function onCoinCreatedV4Event(
+        EventContext memory ctx,
+        ZoraFactory$CoinCreatedV4EventParams memory inputs
+    ) external override {
+        CoinCreatedV4Data memory data = CoinCreatedV4Data({
+            chainId: uint64(block.chainid),
+            caller: inputs.caller,
+            payoutRecipient: inputs.payoutRecipient,
+            platformReferrer: inputs.platformReferrer,
+            currency: inputs.currency,
+            uri: inputs.uri,
+            name: inputs.name,
+            symbol: inputs.symbol,
+            coin: inputs.coin,
+            currency0: inputs.poolKey.currency0,
+            currency1: inputs.poolKey.currency1,
+            fee: inputs.poolKey.fee,
+            tickSpacing: inputs.poolKey.tickSpacing,
+            hooks: inputs.poolKey.hooks,
+            poolKeyHash: inputs.poolKeyHash,
+            version: inputs.version
+        });
+        
+        emit CoinCreatedV4(data);
+    }
 
-    // /// Handler for CreatorCoinCreated event
-    // function onCreatorCoinCreatedEvent(
-    //     EventContext memory ctx,
-    //     ZoraFactory$CreatorCoinCreatedEventParams memory inputs
-    // ) external override {
-    //     emit CreatorCoinCreated(
-    //         uint64(block.chainid),
-    //         inputs.caller,
-    //         inputs.payoutRecipient,
-    //         inputs.platformReferrer,
-    //         inputs.currency,
-    //         inputs.uri,
-    //         inputs.name,
-    //         inputs.symbol,
-    //         inputs.coin,
-    //         inputs.poolKey.currency0,
-    //         inputs.poolKey.currency1,
-    //         inputs.poolKey.fee,
-    //         inputs.poolKey.tickSpacing,
-    //         inputs.poolKey.hooks,
-    //         inputs.poolKeyHash,
-    //         inputs.version
-    //     );
-    // }
+    /// Handler for CreatorCoinCreated event
+    function onCreatorCoinCreatedEvent(
+        EventContext memory ctx,
+        ZoraFactory$CreatorCoinCreatedEventParams memory inputs
+    ) external override {
+        CreatorCoinCreatedData memory data = CreatorCoinCreatedData({
+            chainId: uint64(block.chainid),
+            caller: inputs.caller,
+            payoutRecipient: inputs.payoutRecipient,
+            platformReferrer: inputs.platformReferrer,
+            currency: inputs.currency,
+            uri: inputs.uri,
+            name: inputs.name,
+            symbol: inputs.symbol,
+            coin: inputs.coin,
+            currency0: inputs.poolKey.currency0,
+            currency1: inputs.poolKey.currency1,
+            fee: inputs.poolKey.fee,
+            tickSpacing: inputs.poolKey.tickSpacing,
+            hooks: inputs.poolKey.hooks,
+            poolKeyHash: inputs.poolKeyHash,
+            version: inputs.version
+        });
+        
+        emit CreatorCoinCreated(data);
+    }
 }
