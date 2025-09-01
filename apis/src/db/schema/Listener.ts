@@ -3,11 +3,54 @@ import { pgEnum, pgTable as table } from "drizzle-orm/pg-core";
 import * as t from "drizzle-orm/pg-core";
 import { db, types } from "@duneanalytics/sim-idx";
 
-export const poolCreated = table("pool_created", {
+export const coinCreated = table("coin_created", {
   chainId: db.uint64('chain_id'),
   caller: db.address('caller'),
+  payoutRecipient: db.address('payout_recipient'),
+  platformReferrer: db.address('platform_referrer'),
+  currency: db.address('currency'),
+  uri: t.text('uri'),
+  name: t.text('name'),
+  symbol: t.text('symbol'),
+  coin: db.address('coin'),
   pool: db.address('pool'),
-  token0: db.address('token0'),
-  token1: db.address('token1'),
+  version: t.text('version'),
+})
+
+export const coinCreatedV4 = table("coin_created_v4", {
+  chainId: db.uint64('chain_id'),
+  caller: db.address('caller'),
+  payoutRecipient: db.address('payout_recipient'),
+  platformReferrer: db.address('platform_referrer'),
+  currency: db.address('currency'),
+  uri: t.text('uri'),
+  name: t.text('name'),
+  symbol: t.text('symbol'),
+  coin: db.address('coin'),
+  currency0: db.address('currency0'),
+  currency1: db.address('currency1'),
   fee: db.uint24('fee'),
+  tickSpacing: db.int24('tick_spacing'),
+  hooks: db.address('hooks'),
+  poolKeyHash: db.bytes32('pool_key_hash'),
+  version: t.text('version'),
+})
+
+export const creatorCoinCreated = table("creator_coin_created", {
+  chainId: db.uint64('chain_id'),
+  caller: db.address('caller'),
+  payoutRecipient: db.address('payout_recipient'),
+  platformReferrer: db.address('platform_referrer'),
+  currency: db.address('currency'),
+  uri: t.text('uri'),
+  name: t.text('name'),
+  symbol: t.text('symbol'),
+  coin: db.address('coin'),
+  currency0: db.address('currency0'),
+  currency1: db.address('currency1'),
+  fee: db.uint24('fee'),
+  tickSpacing: db.int24('tick_spacing'),
+  hooks: db.address('hooks'),
+  poolKeyHash: db.bytes32('pool_key_hash'),
+  version: t.text('version'),
 })
