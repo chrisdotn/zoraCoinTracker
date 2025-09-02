@@ -17,5 +17,15 @@ contract Triggers is BaseTriggers {
             chainContract(Chains.Base, ZORA_FACTORY_BASE),
             listener.triggerOnCoinCreatedEvent()
         );
+
+        addTrigger(
+            chainContract(Chains.Base, ZORA_FACTORY_BASE),
+            listener.triggerOnCoinCreatedV4Event()
+        );
+
+        addTrigger(
+            chainContract(Chains.Base, ZORA_FACTORY_BASE),
+            listener.triggerOnCreatorCoinCreatedEvent()
+        );
     }
 }

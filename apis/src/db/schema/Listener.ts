@@ -54,3 +54,7 @@ export const creatorCoinCreated = table("creator_coin_created", {
   poolKeyHash: db.bytes32('pool_key_hash'),
   version: t.text('version'),
 })
+
+export const v4Created = table("v4_created", {
+  name: t.text('name'),
+})

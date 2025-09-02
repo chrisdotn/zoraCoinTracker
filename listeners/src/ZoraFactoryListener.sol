@@ -74,6 +74,7 @@ contract ZoraFactoryListener is
     
     // Event for tracking creator coin creation events
     event CreatorCoinCreated(CreatorCoinCreatedData);
+    event V4Created(string name);
 
     /// Handler for CoinCreated event
     function onCoinCreatedEvent(
@@ -120,6 +121,7 @@ contract ZoraFactoryListener is
         });
         
         emit CoinCreatedV4(data);
+        emit V4Created(inputs.name);
     }
 
     /// Handler for CreatorCoinCreated event
