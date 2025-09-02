@@ -12,7 +12,6 @@ contract ZoraFactoryListener is
 {
     /// Struct for V4 coin creation event data
     struct CoinCreatedV4Data {
-        uint64 chainId;
         address caller;
         address payoutRecipient;
         address platformReferrer;
@@ -21,18 +20,13 @@ contract ZoraFactoryListener is
         string name;
         string symbol;
         address coin;
-        address currency0;
-        address currency1;
-        uint24 fee;
-        int24 tickSpacing;
-        address hooks;
         bytes32 poolKeyHash;
         string version;
+        bytes32 txnHash;
     }
     
     /// Struct for creator coin creation event data
     struct CreatorCoinCreatedData {
-        uint64 chainId;
         address caller;
         address payoutRecipient;
         address platformReferrer;
@@ -41,13 +35,9 @@ contract ZoraFactoryListener is
         string name;
         string symbol;
         address coin;
-        address currency0;
-        address currency1;
-        uint24 fee;
-        int24 tickSpacing;
-        address hooks;
         bytes32 poolKeyHash;
         string version;
+        bytes32 txnHash;
     }
 
     /// Emitted events are indexed.
@@ -55,7 +45,6 @@ contract ZoraFactoryListener is
     
     // Event for tracking coin creation events
     event CoinCreated(
-        uint64 chainId,
         address caller,
         address payoutRecipient,
         address platformReferrer,
@@ -65,7 +54,8 @@ contract ZoraFactoryListener is
         string symbol,
         address coin,
         address pool,
-        string version
+        string version,
+        bytes32 txnHash
     );
     
     // Event for tracking coin creation V4 events
@@ -81,7 +71,6 @@ contract ZoraFactoryListener is
         ZoraFactory$CoinCreatedEventParams memory inputs
     ) external override {
         emit CoinCreated(
-            uint64(block.chainid),
             inputs.caller,
             inputs.payoutRecipient,
             inputs.platformReferrer,
@@ -91,7 +80,8 @@ contract ZoraFactoryListener is
             inputs.symbol,
             inputs.coin,
             inputs.pool,
-            inputs.version
+            inputs.version,
+            ctx.txn.hash()
         );
     }
 
@@ -101,7 +91,6 @@ contract ZoraFactoryListener is
         ZoraFactory$CoinCreatedV4EventParams memory inputs
     ) external override {
         CoinCreatedV4Data memory data = CoinCreatedV4Data({
-            chainId: uint64(block.chainid),
             caller: inputs.caller,
             payoutRecipient: inputs.payoutRecipient,
             platformReferrer: inputs.platformReferrer,
@@ -110,13 +99,9 @@ contract ZoraFactoryListener is
             name: inputs.name,
             symbol: inputs.symbol,
             coin: inputs.coin,
-            currency0: inputs.poolKey.currency0,
-            currency1: inputs.poolKey.currency1,
-            fee: inputs.poolKey.fee,
-            tickSpacing: inputs.poolKey.tickSpacing,
-            hooks: inputs.poolKey.hooks,
             poolKeyHash: inputs.poolKeyHash,
-            version: inputs.version
+            version: inputs.version,
+            txnHash: ctx.txn.hash()
         });
         
         emit CoinCreatedV4(data);
@@ -128,7 +113,6 @@ contract ZoraFactoryListener is
         ZoraFactory$CreatorCoinCreatedEventParams memory inputs
     ) external override {
         CreatorCoinCreatedData memory data = CreatorCoinCreatedData({
-            chainId: uint64(block.chainid),
             caller: inputs.caller,
             payoutRecipient: inputs.payoutRecipient,
             platformReferrer: inputs.platformReferrer,
@@ -137,13 +121,9 @@ contract ZoraFactoryListener is
             name: inputs.name,
             symbol: inputs.symbol,
             coin: inputs.coin,
-            currency0: inputs.poolKey.currency0,
-            currency1: inputs.poolKey.currency1,
-            fee: inputs.poolKey.fee,
-            tickSpacing: inputs.poolKey.tickSpacing,
-            hooks: inputs.poolKey.hooks,
             poolKeyHash: inputs.poolKeyHash,
-            version: inputs.version
+            version: inputs.version,
+            txnHash: ctx.txn.hash()
         });
         
         emit CreatorCoinCreated(data);
